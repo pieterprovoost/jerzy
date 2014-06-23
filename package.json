@@ -1,0 +1,11 @@
+{
+	"name": "jerzy",
+	"main": "./lib/jerzy.js",
+	"devDependencies": {
+		"mocha": "*",
+		"chai": "*"
+	},
+	"scripts": {
+		"test": "node_modules/.bin/mocha"
+	}
+}
