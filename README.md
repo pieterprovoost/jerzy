@@ -1,0 +1,4 @@
+jerzy
+=====
+
+JavaScript statistics library
