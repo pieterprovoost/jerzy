@@ -43,5 +43,25 @@ Output:
 }
 ```
 
+#### T distribution
+
+```javascript
+var v = new jerzy.Vector([-5, -4, -3]);
+var d = new jerzy.T(100).distr(v);
+console.log(JSON.stringify(d, null, 4));
+```
+
+Output:
+
+```
+{
+    "elements": [
+        0.0000012250869359284488,
+        0.00006076182218810418,
+        0.001703957671686302
+    ]
+}
+```
+
 
 
