@@ -1,6 +1,6 @@
 {
 	"name": "jerzy",
-	"main": "./lib/jerzy.js",
+	"main": "./jerzy.js",
 	"devDependencies": {
 		"mocha": "*",
 		"chai": "*"

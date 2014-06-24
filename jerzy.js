@@ -1,9 +1,9 @@
-var vector = require('./vector');
-var t = require('./t');
-var misc = require('./misc');
-var distributions = require('./distributions');
-var regression = require('./regression');
-var numeric = require('./numeric');
+var vector = require('./lib/vector');
+var t = require('./lib/t');
+var misc = require('./lib/misc');
+var distributions = require('./lib/distributions');
+var regression = require('./lib/regression');
+var numeric = require('./lib/numeric');
 
 module.exports.Vector = vector.Vector;
 module.exports.Sequence = vector.Sequence;
@@ -13,4 +13,4 @@ module.exports.Numeric = numeric.Numeric;
 module.exports.Normal = distributions.Normal;
 module.exports.StandardNormal = distributions.StandardNormal;
 module.exports.T = distributions.T;
-module.exports.LinearRegression = regression.LinearRegression;
+module.exports.Regression = regression.Regression;
