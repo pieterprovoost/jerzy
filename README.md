@@ -1,4 +1,4 @@
-jerzy
-=====
+# jerzy
 
 JavaScript statistics library
+
