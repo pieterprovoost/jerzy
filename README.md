@@ -141,4 +141,16 @@ Output:
 0.10400000000000006
 ```
 
+#### Gamma function
+
+```javascript
+var gamma = jerzy.Misc.gamma(0.5);
+console.log(gamma);
+```
+
+Output:
+
+```
+1.7724538509055159
+```
 
