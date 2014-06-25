@@ -109,6 +109,7 @@ Output:
 ```
 
 ### Numerical analysis
+#### Adaptive Simpson
 
 ```javascript
 var area = jerzy.Numeric.adaptiveSimpson(function(x) {
