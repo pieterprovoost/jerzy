@@ -123,3 +123,22 @@ Output:
 ```
 0.7834305107121379
 ```
+
+### Special functions
+#### Beta function, incomplete beta function, regularized incomplete beta function
+
+```javascript
+console.log(jerzy.Misc.beta(2, 2));
+console.log(jerzy.Misc.ibeta(0.2, 2, 2));
+console.log(jerzy.Misc.rbeta(0.2, 2, 2));
+```
+
+Output:
+
+```
+0.16666666666666655
+0.017333333333333333
+0.10400000000000006
+```
+
+
