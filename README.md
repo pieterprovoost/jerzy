@@ -63,6 +63,65 @@ Output:
 }
 ```
 
+### Hypothesis testing
+#### Two-sample Student's T-test
+
+```javascript
+var first = new jerzy.Vector([26, 21, 22, 26, 19, 22, 26, 25, 24, 21, 23, 23, 18, 29, 22]);
+var second = new jerzy.Vector([18, 23, 21, 20, 20, 29, 20, 16, 20, 26, 21, 25, 17, 18, 19]);
+var t = new jerzy.StudentT(first, second);
+console.log(JSON.stringify(t, null, 4));
+```
+
+Output:
+
+```
+{
+    "first": {
+        "elements": [
+            26,
+            21,
+            22,
+            26,
+            19,
+            22,
+            26,
+            25,
+            24,
+            21,
+            23,
+            23,
+            18,
+            29,
+            22
+        ]
+    },
+    "second": {
+        "elements": [
+            18,
+            23,
+            21,
+            20,
+            20,
+            29,
+            20,
+            16,
+            20,
+            26,
+            21,
+            25,
+            17,
+            18,
+            19
+        ]
+    },
+    "se": 1.1861636172906869,
+    "t": 1.910922433992667,
+    "df": 28,
+    "p": 0.06630238610019434
+}
+```
+
 ### Regression
 
 ```javascript
