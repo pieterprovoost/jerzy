@@ -115,7 +115,7 @@ Output:
 var area = jerzy.Numeric.adaptiveSimpson(function(x) {
 	return Math.pow(x, x)
 }, 0, 1, 0.000000000001, 20);
-console.log(JSON.stringify(area, null, 4));
+console.log(area);
 ```
 
 Output:
