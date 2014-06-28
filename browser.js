@@ -116,6 +116,7 @@
 			var misc = require('./lib/misc');
 			var distributions = require('./lib/distributions');
 			var regression = require('./lib/regression');
+			var correlation = require('./lib/correlation');
 			var numeric = require('./lib/numeric');
 			
 			module.exports.Vector = vector.Vector;
@@ -127,8 +128,32 @@
 			module.exports.StandardNormal = distributions.StandardNormal;
 			module.exports.T = distributions.T;
 			module.exports.Regression = regression.Regression;
+			module.exports.Correlation = correlation.Correlation;
 		},
 		"lib": {
+			"correlation.js": function (exports, module, require) {
+				Correlation = function() {};
+
+				/*
+				 * Pearson correlation
+				 */
+
+				Correlation.pearson = function(x, y) {
+					this.n = x.length();
+					var mx = x.mean();
+					var my = y.mean();
+
+					this.r = x.add(-mx).multiply(y.add(-my)).sum() /
+						Math.sqrt(x.add(-mx).pow(2).sum() * y.add(-my).pow(2).sum());
+					this.t = this.r * Math.sqrt((this.n - 2) / (1 - Math.pow(this.r, 2)));
+					this.df = this.n - 2;
+					var tdistr = new T(this.df);
+					this.p = 2 * (1 - tdistr.distr(Math.abs(this.t)));
+				};
+
+				module.exports.Correlation = Correlation;
+
+			},
 			"distributions.js": function (exports, module, require) {
 				var vector = require('./vector');
 				var misc = require('./misc');
@@ -140,7 +165,7 @@
 				Normal = function(mean, variance) {
 					this.mean = mean;
 					this.variance = variance;
-				}
+				};
 				
 				Normal.prototype._de = function(x) {
 					return (1 / (Math.sqrt(this.variance) * (Math.sqrt(2 * Math.PI)))) 
@@ -157,7 +182,7 @@
 					} else {
 						return this._de(arg);
 					}
-				}
+				};
 				
 				/*
 				 * Standard Normal distribution
@@ -263,7 +288,7 @@
 				Misc.prototype.ibeta = function (x, a, b) {
 					return numeric.Numeric.adaptiveSimpson(function(y) {
 						return Math.pow(y, a - 1) * Math.pow(1 - y, b - 1);
-					}, 0, x, 0.000000001, 10);
+					}, 0, x, 0.000000000001, 10);
 				};
 
 				/*
