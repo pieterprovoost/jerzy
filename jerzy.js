@@ -3,6 +3,7 @@ var t = require('./lib/t');
 var misc = require('./lib/misc');
 var distributions = require('./lib/distributions');
 var regression = require('./lib/regression');
+var correlation = require('./lib/correlation');
 var numeric = require('./lib/numeric');
 
 module.exports.Vector = vector.Vector;
@@ -14,3 +15,4 @@ module.exports.Normal = distributions.Normal;
 module.exports.StandardNormal = distributions.StandardNormal;
 module.exports.T = distributions.T;
 module.exports.Regression = regression.Regression;
+module.exports.Correlation = correlation.Correlation;
