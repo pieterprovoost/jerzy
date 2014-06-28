@@ -63,6 +63,65 @@ Output:
 }
 ```
 
+### Hypothesis testing
+#### Two-sample Student's T-test
+
+```javascript
+var first = new jerzy.Vector([26, 21, 22, 26, 19, 22, 26, 25, 24, 21, 23, 23, 18, 29, 22]);
+var second = new jerzy.Vector([18, 23, 21, 20, 20, 29, 20, 16, 20, 26, 21, 25, 17, 18, 19]);
+var t = new jerzy.StudentT(first, second);
+console.log(JSON.stringify(t, null, 4));
+```
+
+Output:
+
+```
+{
+    "first": {
+        "elements": [
+            26,
+            21,
+            22,
+            26,
+            19,
+            22,
+            26,
+            25,
+            24,
+            21,
+            23,
+            23,
+            18,
+            29,
+            22
+        ]
+    },
+    "second": {
+        "elements": [
+            18,
+            23,
+            21,
+            20,
+            20,
+            29,
+            20,
+            16,
+            20,
+            26,
+            21,
+            25,
+            17,
+            18,
+            19
+        ]
+    },
+    "se": 1.1861636172906869,
+    "t": 1.910922433992667,
+    "df": 28,
+    "p": 0.06630238610019434
+}
+```
+
 ### Regression
 
 ```javascript
@@ -106,5 +165,51 @@ Output:
     "intercept_p": 0.0015341064002789562,
     "rs": 0.9763046860267774
 }
+```
+
+### Numerical analysis
+#### Adaptive Simpson
+
+```javascript
+var area = jerzy.Numeric.adaptiveSimpson(function(x) {
+	return Math.pow(x, x)
+}, 0, 1, 0.000000000001, 20);
+console.log(area);
+```
+
+Output:
+
+```
+0.7834305107121379
+```
+
+### Special functions
+#### Beta function, incomplete beta function, regularized incomplete beta function
+
+```javascript
+console.log(jerzy.Misc.beta(2, 2));
+console.log(jerzy.Misc.ibeta(0.2, 2, 2));
+console.log(jerzy.Misc.rbeta(0.2, 2, 2));
+```
+
+Output:
+
+```
+0.16666666666666655
+0.017333333333333333
+0.10400000000000006
+```
+
+#### Gamma function
+
+```javascript
+var gamma = jerzy.Misc.gamma(0.5);
+console.log(gamma);
+```
+
+Output:
+
+```
+1.7724538509055159
 ```
 
