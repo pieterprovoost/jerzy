@@ -183,6 +183,28 @@ Output:
 0.7834305107121379
 ```
 
+#### Root finding
+
+```javascript
+console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
+```
+
+Output:
+
+```
+3.1415926535897647
+```
+
+```javascript
+console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
+```
+
+Output:
+
+```
+3.1415926539339125
+```
+
 ### Special functions
 #### Beta function, incomplete beta function, regularized incomplete beta function
 
