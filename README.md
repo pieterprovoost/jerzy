@@ -1,6 +1,6 @@
 # jerzy
 
-Jerzy is a JavaScript statistics library.
+Jerzy is a JavaScript statistics library
 
 ## Usage
 #### Node
