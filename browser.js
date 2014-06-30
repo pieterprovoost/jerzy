@@ -132,6 +132,8 @@
 		},
 		"lib": {
 			"correlation.js": function (exports, module, require) {
+				var distributions = require('./distributions');
+
 				Correlation = function() {};
 
 				/*
@@ -139,20 +141,20 @@
 				 */
 
 				Correlation.pearson = function(x, y) {
-					this.n = x.length();
+					var result = {};
+					var n = x.length();
 					var mx = x.mean();
 					var my = y.mean();
-
-					this.r = x.add(-mx).multiply(y.add(-my)).sum() /
+					result.r = x.add(-mx).multiply(y.add(-my)).sum() /
 						Math.sqrt(x.add(-mx).pow(2).sum() * y.add(-my).pow(2).sum());
-					this.t = this.r * Math.sqrt((this.n - 2) / (1 - Math.pow(this.r, 2)));
-					this.df = this.n - 2;
-					var tdistr = new T(this.df);
-					this.p = 2 * (1 - tdistr.distr(Math.abs(this.t)));
+					result.t = result.r * Math.sqrt((n - 2) / (1 - Math.pow(result.r, 2)));
+					result.df = n - 2;
+					var tdistr = new distributions.T(result.df);
+					result.p = 2 * (1 - tdistr.distr(Math.abs(result.t)));
+					return result;
 				};
 
 				module.exports.Correlation = Correlation;
-
 			},
 			"distributions.js": function (exports, module, require) {
 				var vector = require('./vector');
@@ -255,7 +257,7 @@
 				 * gamma function
 				 */
 
-				Misc.prototype.gamma = function (n) {
+				Misc.gamma = function (n) {
 					var p = [
 						0.99999999999980993, 676.5203681218851, -1259.1392167224028,
 						771.32342877765313, -176.61502916214059, 12.507343278686905,
@@ -277,7 +279,7 @@
 				 * beta function
 				 */
 
-				Misc.prototype.beta = function (x, y) {
+				Misc.beta = function (x, y) {
 					return this.gamma(x) * this.gamma(y) / this.gamma(x + y);
 				};
 
@@ -285,7 +287,7 @@
 				 * incomplete beta function
 				 */
 
-				Misc.prototype.ibeta = function (x, a, b) {
+				Misc.ibeta = function (x, a, b) {
 					return numeric.Numeric.adaptiveSimpson(function(y) {
 						return Math.pow(y, a - 1) * Math.pow(1 - y, b - 1);
 					}, 0, x, 0.000000000001, 10);
@@ -296,7 +298,7 @@
 				 */
 
 
-				Misc.prototype.rbeta = function (x, a, b) {
+				Misc.rbeta = function (x, a, b) {
 					return this.ibeta(x, a, b) / this.beta(a, b);
 				};
 
@@ -304,15 +306,13 @@
 				 * factorial
 				 */
 
-				Misc.prototype.fac = function(n) {
+				Misc.fac = function(n) {
 					var result = 1;
 					for (var i = 2; i <= n; i++) {
 						result = result * i;
 					}
 					return result;
 				}
-
-				Misc = new Misc();
 
 				module.exports.Misc = Misc;
 			},
@@ -323,7 +323,7 @@
 				 * adaptive Simpson
 				 */
 				
-				Numeric.prototype._adaptive = function(f, a, b, eps, s, fa, fb, fc, depth) {
+				Numeric._adaptive = function(f, a, b, eps, s, fa, fb, fc, depth) {
 					var c = (a + b) / 2;
 					var h = b - a;
 					var d = (a + c) / 2;
@@ -341,7 +341,7 @@
 					}
 				}
 				
-				Numeric.prototype.adaptiveSimpson = function(f, a, b, eps, depth) {
+				Numeric.adaptiveSimpson = function(f, a, b, eps, depth) {
 					var c = (a + b) / 2;
 					var h = b - a;
 					var fa = f(a);
@@ -351,11 +351,41 @@
 					return this._adaptive(f, a, b, eps, s, fa, fb, fc, depth);
 				}
 				
-				Numeric = new Numeric();
+				/*
+				 * root finding: bisection
+				 */
+				
+				Numeric.bisection = function(f, a, b) {
+					var tolerance = 0.000000001;
+					while (Math.abs(a - b) > tolerance) {
+				 		if (f(a) * f((a + b) / 2) < 0) {
+				 			b = (a + b) / 2;
+				 		} else {
+				 			a = (a + b) / 2;
+				 		}
+				 	}
+					return (a + b) / 2;
+				}
+				
+				/*
+				 * root finding: secant
+				 */
+				
+				Numeric.secant = function(f, a, b) {
+					var tolerance = 0.000000001;
+					var q = [a, b];
+					while (Math.abs(q[0] - q[1]) > tolerance) {
+						q.push((q[0] * f(q[1]) - q[1] * f(q[0])) / (f(q[1]) - f(q[0])));
+						q.shift();
+					}
+					return (q[0] + q[1]) / 2;
+				}
 				
 				module.exports.Numeric = Numeric;
 			},
 			"regression.js": function (exports, module, require) {
+				var distributions = require('./distributions');
+				
 				Regression = function() {};
 				
 				/*
@@ -363,95 +393,101 @@
 				 */
 				
 				Regression.linear = function(x, y) {
-				
-					this.n = x.length();
-					this.x = x;
-					this.y = y;
+					var result = {};
+					result.n = x.length();
 				
 					// means
 				
-					var mx = this.x.mean();
-					var my = this.y.mean();
+					var mx = x.mean();
+					var my = y.mean();
 				
 					// parameters
 				
-					var rx = this.x.add(-mx);
-					var ry = this.y.add(-my);
+					var rx = x.add(-mx);
+					var ry = y.add(-my);
 				
 					var ssxx = rx.pow(2).sum();
 					var ssyy = ry.pow(2).sum();
 					var ssxy = rx.multiply(ry).sum();
 				
-					this.slope = ssxy / ssxx;
-					this.intercept = my - this.slope * mx;
+					result.slope = ssxy / ssxx;
+					result.intercept = my - result.slope * mx;
 				
 					// sum of squared residuals
 				
-					var ssr = y.add(x.multiply(this.slope).add(this.intercept).multiply(-1)).pow(2).sum();
+					var ssr = y.add(x.multiply(result.slope).add(result.intercept).multiply(-1)).pow(2).sum();
 				
 					// residual standard error
 				
-					this.rse = Math.sqrt(ssr / (this.n - 2))
+					result.rse = Math.sqrt(ssr / (result.n - 2))
 					
 					// slope
 				
-					var tdistr = new T(this.n - 2);
+					var tdistr = new distributions.T(result.n - 2);
 				
-					this.slope_se = this.rse / Math.sqrt(ssxx);
-					this.slope_t = this.slope / this.slope_se;
-					this.slope_p = 2 * (1 - tdistr.distr(Math.abs(this.slope_t)));
+					result.slope_se = result.rse / Math.sqrt(ssxx);
+					result.slope_t = result.slope / result.slope_se;
+					result.slope_p = 2 * (1 - tdistr.distr(Math.abs(result.slope_t)));
 				
 					// intercept
 				
-					this.intercept_se = this.rse / Math.sqrt(ssxx) / Math.sqrt(this.n) * Math.sqrt(x.pow(2).sum());
-					this.intercept_t = this.intercept / this.intercept_se;
-					this.intercept_p = 2 * (1 - tdistr.distr(Math.abs(this.intercept_t)));
+					result.intercept_se = result.rse / Math.sqrt(ssxx) / Math.sqrt(result.n) * Math.sqrt(x.pow(2).sum());
+					result.intercept_t = result.intercept / result.intercept_se;
+					result.intercept_p = 2 * (1 - tdistr.distr(Math.abs(result.intercept_t)));
 				
 					// R-squared
 					
-					this.rs = Math.pow(ssxy, 2) / (ssxx * ssyy);
+					result.rs = Math.pow(ssxy, 2) / (ssxx * ssyy);
 				
+					return result;
 				};
 				
 				module.exports.Regression = Regression;
 			},
 			"t.js": function (exports, module, require) {
 				var vector = require('./vector');
+				var distributions = require('./distributions');
 				
-				StudentT = function(first, second) {
+				StudentT = function(){};
+				
+				StudentT.test = function(first, second) {
 					if (second instanceof vector.Vector) {
-						this._twosample(first, second);
+						return this._twosample(first, second);
 					} else {
-						this._onesample(first, second);
+						return this._onesample(first, second);
 					}
-				}
+				};
 				
 				/*
 				 * two-sample Student's t-test
 				 */
 				
-				StudentT.prototype._twosample = function(first, second) {
-					this.first = first;
-					this.second = second;
-					this.se = Math.sqrt((this.first.variance() / this.first.length()) + (this.second.variance() / this.second.length()));
-					this.t = (this.first.mean() - this.second.mean()) / this.se;
-					this.df = this.first.length() + this.second.length() - 2;
-					var tdistr = new T(this.df);
-					this.p = 2 * (1 - tdistr.distr(Math.abs(this.t)));
+				StudentT._twosample = function(first, second) {
+					var result = {};
+					result.first = first;
+					result.second = second;
+					result.se = Math.sqrt((result.first.variance() / result.first.length()) + (result.second.variance() / result.second.length()));
+					result.t = (result.first.mean() - result.second.mean()) / result.se;
+					result.df = result.first.length() + result.second.length() - 2;
+					var tdistr = new distributions.T(result.df);
+					result.p = 2 * (1 - tdistr.distr(Math.abs(result.t)));
+					return result;
 				};
 				
 				/*
 				 * one-sample Student's t-test
 				 */
 				
-				StudentT.prototype._onesample = function(sample, mu) {
-					this.sample = sample;
-					this.mu = mu;
-					this.se = Math.sqrt(this.sample.variance()) / Math.sqrt(this.sample.length());
-					this.t = (this.sample.mean() - this.mu) / this.se;
-					this.df = this.sample.length() - 1;
-					var tdistr = new T(this.df);
-					this.p = 2 * (1 - tdistr.distr(Math.abs(this.t)));
+				StudentT._onesample = function(sample, mu) {
+					var result = {};
+					result.sample = sample;
+					result.mu = mu;
+					result.se = Math.sqrt(result.sample.variance()) / Math.sqrt(result.sample.length());
+					result.t = (result.sample.mean() - result.mu) / result.se;
+					result.df = result.sample.length() - 1;
+					var tdistr = new distributions.T(result.df);
+					result.p = 2 * (1 - tdistr.distr(Math.abs(result.t)));
+					return result;
 				};
 				
 				module.exports.StudentT = StudentT;
