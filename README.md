@@ -17,7 +17,6 @@ console.log(new jerzy.Normal(0, 1).dens(0));
 <script>
   console.log(new Normal(0, 1).dens(0));
 </script>
-
 ```
 
 ## Features
