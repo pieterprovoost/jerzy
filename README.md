@@ -3,7 +3,7 @@
 Jerzy is a JavaScript statistics library
 
 ## Usage
-#### Node
+#### Node.js
 
 ```javascript
 var jerzy = require("./jerzy");
