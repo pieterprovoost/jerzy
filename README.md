@@ -84,6 +84,7 @@ Output:
 ```
 
 ### Regression
+#### Simple linear regression
 
 ```javascript
 var y = new jerzy.Vector([2000, 2001, 2002, 2003, 2004]);
