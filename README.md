@@ -145,7 +145,7 @@ Output:
 0.7834305107121379
 ```
 
-#### Root finding
+#### Root finding (secant method)
 
 ```javascript
 console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
@@ -157,8 +157,10 @@ Output:
 3.1415926535897647
 ```
 
+#### Root finding (bisection method)
+
 ```javascript
-console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
+console.log(jerzy.Numeric.bisection(Math.sin, 3, 4));
 ```
 
 Output:
