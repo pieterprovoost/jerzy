@@ -186,7 +186,7 @@ Output:
 ```
 
 ### Special functions
-#### Beta function, incomplete beta function, regularized incomplete beta function
+#### Beta function
 
 ```javascript
 console.log(jerzy.Misc.beta(2, 2));
