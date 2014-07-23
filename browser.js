@@ -112,14 +112,17 @@
 	"jerzy": {
 		"jerzy.js": function (exports, module, require) {
 			var vector = require('./lib/vector');
+			var factor = require('./lib/factor');
 			var t = require('./lib/t');
 			var misc = require('./lib/misc');
 			var distributions = require('./lib/distributions');
 			var regression = require('./lib/regression');
 			var correlation = require('./lib/correlation');
 			var numeric = require('./lib/numeric');
+			var anova = require('./lib/anova');
 			
 			module.exports.Vector = vector.Vector;
+			module.exports.Factor = factor.Factor;
 			module.exports.Sequence = vector.Sequence;
 			module.exports.StudentT = t.StudentT;
 			module.exports.Misc = misc.Misc;
@@ -127,10 +130,62 @@
 			module.exports.Normal = distributions.Normal;
 			module.exports.StandardNormal = distributions.StandardNormal;
 			module.exports.T = distributions.T;
+			module.exports.F = distributions.F;
 			module.exports.Regression = regression.Regression;
 			module.exports.Correlation = correlation.Correlation;
+			module.exports.Anova = anova.Anova;
 		},
 		"lib": {
+			"anova.js": function (exports, module, require) {
+				var vector = require('./vector');
+				var distributions = require('./distributions');
+
+				Anova = function() {};
+
+				/*
+				 * One-way ANOVA
+				 */
+
+				Anova.oneway = function(x, y) {
+					var result = {};
+
+					var vectors = [];
+					for (var i = 0; i < x.groups(); i++) {
+						var v = new vector.Vector([]);
+						var indices = x.group(i);
+						for (var j = 0; j < indices.length; j++) {
+							v.push(y.elements[indices[j]]);
+						}
+						vectors.push(v);
+					}
+
+					var mean = new vector.Vector([]);
+					var n = new vector.Vector([]);
+					var v = new vector.Vector([]);
+					for (var i = 0; i < vectors.length; i++) {
+						mean.push(vectors[i].mean());
+						n.push(vectors[i].length());
+						v.push(vectors[i].variance());
+					}
+
+					result.tdf = x.groups() - 1;
+					result.tss = mean.add(-y.mean()).pow(2).multiply(n).sum();
+					result.tms = result.tss / result.tdf;
+
+					result.edf = x.length() - x.groups();
+					result.ess = v.multiply(n.add(-1)).sum();
+					result.ems = result.ess / result.edf;
+
+					result.f = result.tms / result.ems;
+
+					var fdistr = new distributions.F(result.tdf, result.edf);
+					result.p = 1 - fdistr.distr(Math.abs(result.f));
+
+					return result;
+				}
+
+				module.exports.Anova = Anova;
+			},
 			"correlation.js": function (exports, module, require) {
 				var distributions = require('./distributions');
 
@@ -244,9 +299,68 @@
 					}
 				};
 				
+				/*
+				 * F distribution
+				 */
+				
+				F = function(df1, df2) {
+					this.df1 = df1;
+					this.df2 = df2;
+				};
+				
+				F.prototype._di = function(x) {
+					return misc.Misc.rbeta((this.df1 * x) / (this.df1 * x + this.df2), this.df1 / 2, this.df2 / 2);
+				};
+				
+				F.prototype.distr = function(arg) {
+					if (arg instanceof vector.Vector) {
+						result = new vector.Vector([]);
+						for (var i = 0; i < arg.length(); ++i) {
+							result.push(this._di(arg.elements[i]));
+						}
+						return result;
+					} else {
+						return this._di(arg);
+					}
+				};
+				
 				module.exports.Normal = Normal;
 				module.exports.StandardNormal = StandardNormal;
 				module.exports.T = T;
+				module.exports.F = F;
+			},
+			"factor.js": function (exports, module, require) {
+				Factor = function(elements) {
+					this.levels = [];
+					this.factors = [];
+					for (var i = 0; i < elements.length; i++) {
+						if ((index = this.levels.indexOf(elements[i])) != -1) {
+							this.factors.push(index);
+						} else {
+							this.factors.push(this.levels.length);
+							this.levels.push(elements[i]);
+						}
+					}
+				};
+
+				Factor.prototype.group = function(g) {
+					var indices = [];
+					var i = -1;
+					while ((i = this.factors.indexOf(g, i + 1)) != -1) {
+						indices.push(i);
+					}
+					return indices;
+				};
+
+				Factor.prototype.length = function() {
+					return this.factors.length;
+				};
+
+				Factor.prototype.groups = function() {
+					return this.levels.length;
+				};
+
+				module.exports.Factor = Factor;
 			},
 			"misc.js": function (exports, module, require) {
 				var numeric = require('./numeric');
@@ -464,11 +578,9 @@
 				
 				StudentT._twosample = function(first, second) {
 					var result = {};
-					result.first = first;
-					result.second = second;
-					result.se = Math.sqrt((result.first.variance() / result.first.length()) + (result.second.variance() / result.second.length()));
-					result.t = (result.first.mean() - result.second.mean()) / result.se;
-					result.df = result.first.length() + result.second.length() - 2;
+					result.se = Math.sqrt((first.variance() / first.length()) + (second.variance() / second.length()));
+					result.t = (first.mean() - second.mean()) / result.se;
+					result.df = first.length() + second.length() - 2;
 					var tdistr = new distributions.T(result.df);
 					result.p = 2 * (1 - tdistr.distr(Math.abs(result.t)));
 					return result;
@@ -493,10 +605,6 @@
 				module.exports.StudentT = StudentT;
 			},
 			"vector.js": function (exports, module, require) {
-				/*
-				 * Vector
-				 */
-				
 				Vector = function(elements) {
 					this.elements = elements;
 				};
@@ -596,12 +704,25 @@
 				};
 				
 				Vector.prototype.variance = function() {
+					return this.ss() / (this.elements.length - 1);
+				};
+				
+				Vector.prototype.ss = function() {
 					var m = this.mean();
 					var sum = 0;
 					for (var i = 0, n = this.elements.length; i < n; ++i) {
 						sum += Math.pow(this.elements[i] - m, 2);
 					}
-					return sum / (this.elements.length - 1);
+					return sum;
+				};
+				
+				Vector.prototype.res = function() {
+					var m = this.mean();
+					var result = new Vector([]);
+					for (var i = 0, n = this.elements.length; i < n; ++i) {
+						result.push(this.elements[i] - m);
+					}
+					return result;
 				};
 				
 				Vector.prototype.sd = function() {
