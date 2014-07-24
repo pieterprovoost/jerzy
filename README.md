@@ -110,6 +110,30 @@ Output:
     "rs": 0.9763046860267774
 }
 ```
+
+### ANOVA
+
+```javascript
+var folate = new jerzy.Vector([243, 251, 275, 291, 347, 354, 380, 392, 206, 210, 226, 249, 255, 273, 285, 295, 309, 241, 258, 270, 293, 328]);
+var ventilation = new jerzy.Factor(["N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N2O+O2,op", "N2O+O2,op",  "N2O+O2,op",  "N2O+O2,op", "N2O+O2,op", "N2O+O2,op", "N2O+O2,op", "N2O+O2,op", "N2O+O2,op", "O2,24h", "O2,24h", "O2,24h", "O2,24h", "O2,24h"]);
+console.log(JSON.stringify(Anova.oneway(ventilation, folate), null, 4));
+```
+
+Output:
+
+```
+{
+    "tdf": 2,
+    "tss": 15515.766414141408,
+    "tms": 7757.883207070704,
+    "edf": 19,
+    "ess": 39716.09722222222,
+    "ems": 2090.3209064327484,
+    "f": 3.7113359882669754,
+    "p": 0.04358933495917705
+}
+```
+
 ### Correlation
 
 ```javascript
