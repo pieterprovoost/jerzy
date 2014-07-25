@@ -20,7 +20,8 @@ console.log(new jerzy.Normal(0, 1).dens(0));
 ```
 
 ## Features
-<a name="distributions"></a>### Distributions
+<a name="distributions"></a>
+### Distributions
 #### Normal distribution
 
 ```javascript
@@ -62,7 +63,8 @@ Output:
 }
 ```
 
-<a name="hypothesis"></a>### Hypothesis testing
+<a name="hypothesis"></a>
+### Hypothesis testing
 #### Two-sample Student's T-test
 
 ```javascript
