@@ -21,8 +21,13 @@ console.log(new jerzy.Normal(0, 1).dens(0));
 
 ## Features
 
-[Distributions](#distributions)
+[Distributions](#distributions)  
 [One- and two-sample tests](#tests)  
+[Regression](#regression)  
+[ANOVA](#anova)  
+[Correlation](#correlation)  
+[Numerical analysis](#numerical)  
+[Special functions](#special)  
 
 <a name="distributions"></a>
 ### Distributions
@@ -89,6 +94,7 @@ Output:
 }
 ```
 
+<a name="regression"></a>
 ### Regression
 #### Simple linear regression
 
@@ -117,6 +123,7 @@ Output:
 }
 ```
 
+<a name="anova"></a>
 ### ANOVA
 #### One-way ANOVA
 
@@ -141,6 +148,7 @@ Output:
 }
 ```
 
+<a name="correlation"></a>
 ### Correlation
 
 ```javascript
@@ -160,6 +168,7 @@ Output:
 }
 ```
 
+<a name="numerical"></a>
 ### Numerical analysis
 #### Adaptive Simpson
 
@@ -200,6 +209,7 @@ Output:
 3.1415926539339125
 ```
 
+<a name="special"></a>
 ### Special functions
 #### Beta function
 
