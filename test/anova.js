@@ -9,12 +9,12 @@ describe('jerzy.Anova', function() {
 	});
 	describe("#tss", function() {
 		it("should return the correct value", function() {
-			assert.closeTo(a.tss, 15515.7664, 0.0001);
+			assert.closeTo(a.tss, 15516, 1);
 		});
 	});
 	describe("#tms", function() {
 		it("should return the correct value", function() {
-			assert.closeTo(a.tms, 7757.8832, 0.0001);
+			assert.closeTo(a.tms, 7757.9, 0.1);
 		});
 	});
 	describe("#edf", function() {
@@ -24,12 +24,12 @@ describe('jerzy.Anova', function() {
 	});
 	describe("#ess", function() {
 		it("should return the correct value", function() {
-			assert.closeTo(a.ess, 39716.0, 0.1);
+			assert.closeTo(a.ess, 39716, 1);
 		});
 	});
 	describe("#ems", function() {
 		it("should return the correct value", function() {
-			assert.closeTo(a.ems, 2090.32, 0.01);
+			assert.closeTo(a.ems, 2090.3, 0.1);
 		});
 	});
 	describe("#f", function() {
@@ -39,7 +39,7 @@ describe('jerzy.Anova', function() {
 	});
 	describe("#p", function() {
 		it("should return the correct value", function() {
-			assert.closeTo(a.p, 0.043589, 0.000001);
+			assert.closeTo(a.p, 0.04359, 0.00001);
 		});
 	});
 });

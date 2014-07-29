@@ -1,5 +1,6 @@
 var vector = require('./lib/vector');
 var factor = require('./lib/factor');
+var matrix = require('./lib/matrix');
 var t = require('./lib/t');
 var misc = require('./lib/misc');
 var distributions = require('./lib/distributions');
@@ -7,9 +8,11 @@ var regression = require('./lib/regression');
 var correlation = require('./lib/correlation');
 var numeric = require('./lib/numeric');
 var anova = require('./lib/anova');
+var normality = require('./lib/normality');
 
 module.exports.Vector = vector.Vector;
 module.exports.Factor = factor.Factor;
+module.exports.Matrix = factor.Matrix;
 module.exports.Sequence = vector.Sequence;
 module.exports.StudentT = t.StudentT;
 module.exports.Misc = misc.Misc;
@@ -21,3 +24,4 @@ module.exports.F = distributions.F;
 module.exports.Regression = regression.Regression;
 module.exports.Correlation = correlation.Correlation;
 module.exports.Anova = anova.Anova;
+module.exports.Normality = normality.Normality;
