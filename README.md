@@ -39,7 +39,7 @@ var d = new jerzy.Normal(0, 1).dens(v);
 console.log(JSON.stringify(d, null, 4));
 ```
 
-```
+```javascript
 {
     "elements": [
         0.3989422804014327,
@@ -58,7 +58,7 @@ var d = new jerzy.T(100).distr(v);
 console.log(JSON.stringify(d, null, 4));
 ```
 
-```
+```javascript
 {
     "elements": [
         0.0000012250869359284488,
@@ -93,7 +93,7 @@ var t = jerzy.StudentT.test(first, second);
 console.log(JSON.stringify(t, null, 4));
 ```
 
-```
+```javascript
 {
     "se": 1.1861636172906869,
     "t": 1.910922433992667,
@@ -113,7 +113,7 @@ var lm = jerzy.Regression.linear(y, r);
 console.log(JSON.stringify(lm, null, 4));
 ```
 
-```
+```javascript
 {
     "n": 5,
     "slope": -0.7050000000000001,
@@ -139,7 +139,7 @@ var ventilation = new jerzy.Factor(["N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N
 console.log(JSON.stringify(Anova.oneway(ventilation, folate), null, 4));
 ```
 
-```
+```javascript
 {
     "tdf": 2,
     "tss": 15515.766414141408,
@@ -161,7 +161,7 @@ var h = new jerzy.Vector([70, 65, 63, 72, 81, 83, 66, 75, 80, 75, 79, 76, 76, 69
 console.log(JSON.stringify(jerzy.Correlation.pearson(g, h), null, 4));
 ```
 
-```
+```javascript
 {
     "r": 0.5192800719499371,
     "t": 3.27216859079223,
@@ -181,7 +181,7 @@ var area = jerzy.Numeric.adaptiveSimpson(function(x) {
 console.log(area);
 ```
 
-```
+```javascript
 0.7834305107121379
 ```
 
@@ -191,7 +191,7 @@ console.log(area);
 console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
 ```
 
-```
+```javascript
 3.1415926535897647
 ```
 
@@ -201,7 +201,7 @@ console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
 console.log(jerzy.Numeric.bisection(Math.sin, 3, 4));
 ```
 
-```
+```javascript
 3.1415926539339125
 ```
 
@@ -215,7 +215,7 @@ console.log(jerzy.Misc.ibeta(0.2, 2, 2));
 console.log(jerzy.Misc.rbeta(0.2, 2, 2));
 ```
 
-```
+```javascript
 0.16666666666666655
 0.017333333333333333
 0.10400000000000006
@@ -228,6 +228,6 @@ var gamma = jerzy.Misc.gamma(0.5);
 console.log(gamma);
 ```
 
-```
+```javascript
 1.7724538509055159
 ```
