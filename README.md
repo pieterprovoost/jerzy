@@ -78,7 +78,6 @@ Output:
 var v = new jerzy.Vector([1, 2, 3, 4, 20]);
 console.log(JSON.stringify(jerzy.Normality.shapiroWilk(v), null, 4));
 ```
-
 ```javascript
 {
     "w": 0.6875792251194642,
