@@ -39,8 +39,6 @@ var d = new jerzy.Normal(0, 1).dens(v);
 console.log(JSON.stringify(d, null, 4));
 ```
 
-Output:
-
 ```
 {
     "elements": [
@@ -60,8 +58,6 @@ var d = new jerzy.T(100).distr(v);
 console.log(JSON.stringify(d, null, 4));
 ```
 
-Output:
-
 ```
 {
     "elements": [
@@ -78,6 +74,7 @@ Output:
 var v = new jerzy.Vector([1, 2, 3, 4, 20]);
 console.log(JSON.stringify(jerzy.Normality.shapiroWilk(v), null, 4));
 ```
+
 ```javascript
 {
     "w": 0.6875792251194642,
@@ -95,8 +92,6 @@ var second = new jerzy.Vector([18, 23, 21, 20, 20, 29, 20, 16, 20, 26, 21, 25, 1
 var t = jerzy.StudentT.test(first, second);
 console.log(JSON.stringify(t, null, 4));
 ```
-
-Output:
 
 ```
 {
@@ -117,8 +112,6 @@ var r = new jerzy.Vector([9.34, 8.50, 7.62, 6.93, 6.60]);
 var lm = jerzy.Regression.linear(y, r);
 console.log(JSON.stringify(lm, null, 4));
 ```
-
-Output:
 
 ```
 {
@@ -146,8 +139,6 @@ var ventilation = new jerzy.Factor(["N2O+O2,24h", "N2O+O2,24h", "N2O+O2,24h", "N
 console.log(JSON.stringify(Anova.oneway(ventilation, folate), null, 4));
 ```
 
-Output:
-
 ```
 {
     "tdf": 2,
@@ -170,8 +161,6 @@ var h = new jerzy.Vector([70, 65, 63, 72, 81, 83, 66, 75, 80, 75, 79, 76, 76, 69
 console.log(JSON.stringify(jerzy.Correlation.pearson(g, h), null, 4));
 ```
 
-Output:
-
 ```
 {
     "r": 0.5192800719499371,
@@ -192,8 +181,6 @@ var area = jerzy.Numeric.adaptiveSimpson(function(x) {
 console.log(area);
 ```
 
-Output:
-
 ```
 0.7834305107121379
 ```
@@ -204,8 +191,6 @@ Output:
 console.log(jerzy.Numeric.secant(Math.sin, 3, 4));
 ```
 
-Output:
-
 ```
 3.1415926535897647
 ```
@@ -215,8 +200,6 @@ Output:
 ```javascript
 console.log(jerzy.Numeric.bisection(Math.sin, 3, 4));
 ```
-
-Output:
 
 ```
 3.1415926539339125
@@ -232,8 +215,6 @@ console.log(jerzy.Misc.ibeta(0.2, 2, 2));
 console.log(jerzy.Misc.rbeta(0.2, 2, 2));
 ```
 
-Output:
-
 ```
 0.16666666666666655
 0.017333333333333333
@@ -247,9 +228,6 @@ var gamma = jerzy.Misc.gamma(0.5);
 console.log(gamma);
 ```
 
-Output:
-
 ```
 1.7724538509055159
 ```
-
