@@ -113,6 +113,7 @@
 		"jerzy.js": function (exports, module, require) {
 			var vector = require('./lib/vector');
 			var factor = require('./lib/factor');
+			var matrix = require('./lib/matrix');
 			var t = require('./lib/t');
 			var misc = require('./lib/misc');
 			var distributions = require('./lib/distributions');
@@ -120,9 +121,11 @@
 			var correlation = require('./lib/correlation');
 			var numeric = require('./lib/numeric');
 			var anova = require('./lib/anova');
+			var normality = require('./lib/normality');
 			
 			module.exports.Vector = vector.Vector;
 			module.exports.Factor = factor.Factor;
+			module.exports.Matrix = factor.Matrix;
 			module.exports.Sequence = vector.Sequence;
 			module.exports.StudentT = t.StudentT;
 			module.exports.Misc = misc.Misc;
@@ -134,6 +137,7 @@
 			module.exports.Regression = regression.Regression;
 			module.exports.Correlation = correlation.Correlation;
 			module.exports.Anova = anova.Anova;
+			module.exports.Normality = normality.Normality;
 		},
 		"lib": {
 			"anova.js": function (exports, module, require) {
@@ -229,6 +233,10 @@
 						* Math.exp(-(Math.pow(x - this.mean, 2)) / (2 * this.variance))
 				};
 				
+				Normal.prototype._di = function(x) {
+					return 0.5 * (1 + misc.Misc.erf((x - this.mean) / (Math.sqrt(this.variance) * Math.sqrt(2))));
+				};
+				
 				Normal.prototype.dens = function(arg) {
 					if (arg instanceof vector.Vector) {
 						result = new vector.Vector([]);
@@ -239,6 +247,61 @@
 					} else {
 						return this._de(arg);
 					}
+				};
+				
+				Normal.prototype.distr = function(arg) {
+					if (arg instanceof vector.Vector) {
+						result = new vector.Vector([]);
+						for (var i = 0; i < arg.length(); ++i) {
+							result.push(this._di(arg.elements[i]));
+						}
+						return result;
+					} else {
+						return this._di(arg);
+					}
+				};
+				
+				Normal.prototype.inverse = function(x) {
+					var a1 = -3.969683028665376e+1;
+					var a2 = 2.209460984245205e+2;
+					var a3 = -2.759285104469687e+2;
+					var a4 = 1.383577518672690e+2;
+					var a5 = -3.066479806614716e+1;
+					var a6 = 2.506628277459239e+0;
+				
+					var b1 = -5.447609879822406e+1;
+					var b2 = 1.615858368580409e+2;
+					var b3 = -1.556989798598866e+2;
+					var b4 = 6.680131188771972e+1;
+					var b5 = -1.328068155288572e+1;
+				
+					var c1 = -7.784894002430293e-3;
+					var c2 = -3.223964580411365e-1;
+					var c3 = -2.400758277161838e+0;
+					var c4 = -2.549732539343734e+0;
+					var c5 = 4.374664141464968e+0;
+					var c6 = 2.938163982698783e+0;
+				
+					var d1 = 7.784695709041462e-3;
+					var d2 = 3.224671290700398e-1;
+					var d3 = 2.445134137142996e+0;
+					var d4 = 3.754408661907416e+0;
+				
+					var q, r, y;
+				
+					if (x < 0.02425) {
+						q = Math.sqrt(-2 * Math.log(x));
+						y = (((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) / ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+					} else if (x < 1 - 0.02425) {
+						q = x - 0.5;
+						r = q * q;
+						y = (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q / (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
+					} else {
+						q = Math.sqrt(-2 * Math.log(1 - x));
+						y = -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) / ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+					}
+				
+					return y * this.variance + this.mean;
 				};
 				
 				/*
@@ -362,10 +425,56 @@
 
 				module.exports.Factor = Factor;
 			},
+			"matrix.js": function (exports, module, require) {
+				Matrix = function(elements) {
+					this.elements = elements;
+				};
+
+				Matrix.prototype.rows = function() {
+					return this.elements.length;
+				};
+
+				Matrix.prototype.cols = function() {
+					return this.elements[0].length;
+				};
+
+				Matrix.prototype.dot = function(m) {
+					var result = [];
+					for (var i = 0; i < this.rows(); i++) {
+						result[i] = [];
+						for (var j = 0; j < m.cols(); j++) {
+							var sum = 0;
+							for (var k = 0; k < this.cols(); k++) {
+								sum += this.elements[i][k] * m.elements[k][j];
+							}
+							result[i][j] = sum;
+						}
+					}
+					return new Matrix(result); 
+				};
+
+				module.exports.Matrix = Matrix;
+			},
 			"misc.js": function (exports, module, require) {
 				var numeric = require('./numeric');
 
 				Misc = function() {};
+
+				/*
+				 * error function
+				 */
+
+				Misc.erf = function(z) {
+					var term;
+					var sum = 0;
+					var n = 0;
+					do {
+						term = Math.pow(-1, n) * Math.pow(z, 2 * n + 1) / this.fac(n) / (2 * n + 1);
+						sum = sum + term;
+						n++;
+					} while (Math.abs(term) > 0.000000000001);
+					return sum * 2 / Math.sqrt(Math.PI);
+				};
 
 				/*
 				 * gamma function
@@ -373,9 +482,16 @@
 
 				Misc.gamma = function (n) {
 					var p = [
-						0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-						771.32342877765313, -176.61502916214059, 12.507343278686905,
-						-0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+						0.99999999999980993,
+						676.5203681218851,
+						-1259.1392167224028,
+						771.32342877765313,
+						-176.61502916214059,
+						12.507343278686905,
+						-0.13857109526572012,
+						9.9843695780195716e-6,
+						1.5056327351493116e-7
+					];
 					var g = 7;
 					if (n < 0.5) {
 						return Math.PI / (Math.sin(Math.PI * n) * this.gamma(1 - n));
@@ -429,6 +545,92 @@
 				}
 
 				module.exports.Misc = Misc;
+			},
+			"normality.js": function (exports, module, require) {
+				var matrix = require('./matrix');
+				var vector = require('./vector');
+				var distributions = require('./distributions');
+
+				Normality = function() {};
+
+				Normality.shapiroWilk = function(x) {
+					result = {};
+					var xx = x.sort();
+					var mean = x.mean();
+					var n = x.length();
+					var u = 1 / Math.sqrt(n);
+
+					// m
+
+					var sn = new distributions.StandardNormal();
+					var m = new vector.Vector([]);
+					for (var i = 1; i <= n; i++) {
+						m.push(sn.inverse((i - 3/8) / (n + 1/4)));
+					}
+
+					// c
+
+					var md = m.dot(m);
+					var c = m.multiply(1 / Math.sqrt(md));
+
+					// a
+
+					var an = -2.706056 * Math.pow(u, 5) + 4.434685 * Math.pow(u, 4) - 2.071190 * Math.pow(u, 3) - 0.147981 * Math.pow(u, 2) + 0.221157 * u + c.elements[n - 1];
+					var ann = -3.582633 * Math.pow(u, 5) + 5.682633 * Math.pow(u, 4) - 1.752461 * Math.pow(u, 3) - 0.293762 * Math.pow(u, 2) + 0.042981 * u + c.elements[n - 2];
+
+					var phi;
+
+					if (n > 5) {
+						phi = (md - 2 * Math.pow(m.elements[n - 1], 2) - 2 * Math.pow(m.elements[n - 2], 2)) / (1 - 2 * Math.pow(an, 2) - 2 * Math.pow(ann, 2));
+					} else {
+						phi = (md - 2 * Math.pow(m.elements[n - 1], 2)) / (1 - 2 * Math.pow(an, 2));
+					}
+
+					var a = new vector.Vector([]);
+					if (n > 5) {
+						a.push(-an);
+						a.push(-ann);
+						for (var i = 2; i < n - 2; i++) {
+							a.push(m.elements[i] * Math.pow(phi, -1/2));
+						}		
+						a.push(ann);
+						a.push(an);
+					} else {
+						a.push(-an);
+						for (var i = 1; i < n - 1; i++) {
+							a.push(m.elements[i] * Math.pow(phi, -1/2));
+						}		
+						a.push(an);
+					}
+
+					// w
+
+					result.w = Math.pow(a.multiply(xx).sum(), 2) / xx.ss();
+
+					// p
+
+					var g, mu, sigma;
+
+					if (n < 12) {
+						var gamma = 0.459 * n - 2.273;
+						g = - Math.log(gamma - Math.log(1 - result.w));
+						mu = -0.0006714 * Math.pow(n, 3) + 0.025054 * Math.pow(n, 2) - 0.39978 * n + 0.5440;
+						sigma = Math.exp(-0.0020322 * Math.pow(n, 3) + 0.062767 * Math.pow(n, 2) - 0.77857 * n + 1.3822);
+					} else {
+						var u = Math.log(n);
+						g = Math.log(1 - result.w);
+						mu = 0.0038915 * Math.pow(u, 3) - 0.083751 * Math.pow(u, 2) - 0.31082 * u - 1.5851;
+						sigma = Math.exp(0.0030302 * Math.pow(u, 2) - 0.082676 * u - 0.4803);
+					}
+
+					var z = (g - mu) / sigma;
+					var norm = new distributions.StandardNormal();
+					result.p = 1 - norm.distr(z);
+
+					return result;
+				};
+
+				module.exports.Normality = Normality;
 			},
 			"numeric.js": function (exports, module, require) {
 				Numeric = function() {};
@@ -617,6 +819,14 @@
 					return this.elements.length;
 				};
 				
+				Vector.prototype.dot = function(v) {
+					var result = 0;
+					for (var i = 0; i < this.length(); i++) {
+						result = result + this.elements[i] * v.elements[i];
+					}
+					return result;
+				};
+				
 				Vector.prototype.sum = function() {
 					var sum = 0;
 					for (var i = 0, n = this.elements.length; i < n; ++i) {
@@ -717,16 +927,19 @@
 				};
 				
 				Vector.prototype.res = function() {
-					var m = this.mean();
-					var result = new Vector([]);
-					for (var i = 0, n = this.elements.length; i < n; ++i) {
-						result.push(this.elements[i] - m);
-					}
-					return result;
+					return this.add(-this.mean());
 				};
 				
 				Vector.prototype.sd = function() {
 					return Math.sqrt(this.variance());
+				};
+				
+				Vector.prototype.kurtosis = function() {
+					return this.res().pow(4).mean() / Math.pow(this.res().pow(2).mean(), 2);
+				};
+				
+				Vector.prototype.skewness = function() {
+					return this.res().pow(3).mean() / Math.pow(this.res().pow(2).mean(), 3 / 2);
 				};
 				
 				/*

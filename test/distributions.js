@@ -11,6 +11,16 @@ describe('jerzy.Normal', function() {
 			assert.closeTo(n.dens(5), 0.00000148672, 0.00000001);
 		});
 	});
+	describe("#distr", function() {
+		it("should return the correct value", function() {
+			assert.closeTo(n.distr(0), 0.5, 0.0000001);
+			assert.closeTo(n.distr(1), 0.8413447, 0.0000001);
+			assert.closeTo(n.distr(2), 0.9772499, 0.0000001);
+			assert.closeTo(n.distr(3), 0.9986501, 0.0000001);
+			assert.closeTo(n.distr(4), 0.9999683, 0.0000001);
+			assert.closeTo(n.distr(5), 0.9999997, 0.0000001);
+		});
+	});
 	describe("#inverse", function() {
 		it("should return the correct value", function() {
 			assert.closeTo(n.inverse(0.01), -2.326348, 0.000001);
