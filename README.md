@@ -72,6 +72,20 @@ Output:
 }
 ```
 
+#### Shapiro-Wilk test
+
+```javascript
+var v = new jerzy.Vector([1, 2, 3, 4, 20]);
+console.log(JSON.stringify(jerzy.Normality.shapiroWilk(v), null, 4));
+```
+
+```javascript
+{
+    "w": 0.6875792251194642,
+    "p": 0.007068598509119006
+}
+```
+
 <a name="tests"></a>
 ### One- and two-sample tests
 #### Two-sample Student's T-test
