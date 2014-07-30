@@ -224,10 +224,19 @@ console.log(jerzy.Misc.rbeta(0.2, 2, 2));
 #### Gamma function
 
 ```javascript
-var gamma = jerzy.Misc.gamma(0.5);
-console.log(gamma);
+console.log(jerzy.Misc.gamma(0.5));
 ```
 
 ```javascript
 1.7724538509055159
+```
+
+#### Error function
+
+```javascript
+console.log(jerzy.Misc.erf(1));
+```
+
+```javascript
+0.842700793
 ```
