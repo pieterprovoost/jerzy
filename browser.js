@@ -122,6 +122,7 @@
 			var numeric = require('./lib/numeric');
 			var anova = require('./lib/anova');
 			var normality = require('./lib/normality');
+			var confidence = require('./lib/confidence');
 			
 			module.exports.Vector = vector.Vector;
 			module.exports.Factor = factor.Factor;
@@ -138,6 +139,7 @@
 			module.exports.Correlation = correlation.Correlation;
 			module.exports.Anova = anova.Anova;
 			module.exports.Normality = normality.Normality;
+			module.exports.Confidence = confidence.Confidence;
 		},
 		"lib": {
 			"anova.js": function (exports, module, require) {
@@ -190,6 +192,22 @@
 
 				module.exports.Anova = Anova;
 			},
+			"confidence.js": function (exports, module, require) {
+				var distributions = require('./distributions');
+
+				Confidence = function() {};
+
+				Confidence.confidence = function(x, p) {
+					var t = new distributions.T(x.length() - 1);
+					console.log("mean", x.mean());
+					console.log("sem", x.sem());
+					var lower = x.mean() - t.inverse(0.5 + p / 2) * x.sem();
+					var upper = x.mean() + t.inverse(0.5 + p / 2) * x.sem();
+					return [lower, upper];
+				};
+
+				module.exports.Confidence = Confidence;
+			},
 			"correlation.js": function (exports, module, require) {
 				var distributions = require('./distributions');
 
@@ -218,6 +236,7 @@
 			"distributions.js": function (exports, module, require) {
 				var vector = require('./vector');
 				var misc = require('./misc');
+				var numeric = require('./numeric');
 				
 				/*
 				 * Normal distribution
@@ -360,6 +379,15 @@
 					} else {
 						return this._di(arg);
 					}
+				};
+				
+				T.prototype.inverse = function(x) {
+					return (function (o, x) {
+						var t = numeric.Numeric.bisection(function(y) {
+							return o._di(y) - x;
+						}, -10.1, 10);
+						return t;
+					})(this, x);
 				};
 				
 				/*
@@ -913,9 +941,49 @@
 					return "[" + this.elements.join(", ") + "]";
 				};
 				
+				/*
+				 * unbiased sample variance
+				 */
+				
 				Vector.prototype.variance = function() {
 					return this.ss() / (this.elements.length - 1);
 				};
+				
+				/*
+				 * biased sample variance
+				 */
+				
+				Vector.prototype.biasedVariance = function() {
+					return this.ss() / this.elements.length;
+				};
+				
+				/*
+				 * corrected sample standard deviation
+				 */
+				
+				Vector.prototype.sd = function() {
+					return Math.sqrt(this.variance());
+				};
+				
+				/*
+				 * uncorrected sample standard deviation
+				 */
+				
+				Vector.prototype.uncorrectedSd = function() {
+					return Math.sqrt(this.biasedVariance());
+				};
+				
+				/*
+				 * standard error of the mean
+				 */
+				
+				 Vector.prototype.sem = function() {
+				 	return this.sd() / Math.sqrt(this.elements.length);
+				 };
+				
+				/*
+				 * total sum of squares
+				 */
 				
 				Vector.prototype.ss = function() {
 					var m = this.mean();
@@ -926,12 +994,12 @@
 					return sum;
 				};
 				
+				/*
+				 * residuals
+				 */
+				
 				Vector.prototype.res = function() {
 					return this.add(-this.mean());
-				};
-				
-				Vector.prototype.sd = function() {
-					return Math.sqrt(this.variance());
 				};
 				
 				Vector.prototype.kurtosis = function() {
@@ -941,10 +1009,6 @@
 				Vector.prototype.skewness = function() {
 					return this.res().pow(3).mean() / Math.pow(this.res().pow(2).mean(), 3 / 2);
 				};
-				
-				/*
-				 * Sequence
-				 */
 				
 				Sequence.prototype = new Vector();
 				
