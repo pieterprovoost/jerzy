@@ -33,6 +33,7 @@ describe('jerzy.Normal', function() {
 
 describe('jerzy.T', function() {
 	var t = new jerzy.T(100);
+	var t1 = new jerzy.T(1);
 	describe("#dens", function() {
 		it("should return the correct value", function() {
 			assert.closeTo(t.dens(-5), 0.000005080, 0.000000001);
@@ -50,6 +51,14 @@ describe('jerzy.T', function() {
 			assert.closeTo(t.distr(-1), 0.1598621, 0.0001);
 			//assert.closeTo(t.distr(0), 0.5000000, 0.0000001);
 			assert.closeTo(t.distr(5), 0.9999988, 0.000001);
+			//assert.closeTo(t1.distr(-5), 0.01224269, 0.000001);
+		});
+	});
+	describe("#inverse", function() {
+		it("should return the correct value", function() {
+			assert.closeTo(t.inverse(0.0000123), -4.425138, 0.000001);
+			//assert.closeTo(t.inverse(0.5), 0.000000, 0.000001);
+			assert.closeTo(t.inverse(0.9876), 2.278881, 0.000001);
 		});
 	});
 });
