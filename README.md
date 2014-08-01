@@ -23,6 +23,7 @@ console.log(new jerzy.Normal(0, 1).dens(0));
 
 [Distributions](#distributions)  
 [One- and two-sample tests](#tests)  
+[Confidence intervals](#confidence)  
 [Regression](#regression)  
 [ANOVA](#anova)  
 [Correlation](#correlation)  
@@ -100,6 +101,18 @@ console.log(JSON.stringify(t, null, 4));
     "df": 28,
     "p": 0.06630238610019434
 }
+```
+
+<a name="confidence"></a>
+### Confidence intervals
+
+```javascript
+var v = new jerzy.Vector([44617, 7066, 17594, 2726, 1178, 18898, 5033, 37151, 4514, 4000]);
+console.log(jerzy.Confidence.confidence(v, 0.95));
+```
+
+```javascript
+[ 3299.8678459441107, 25255.53215405589 ]
 ```
 
 <a name="regression"></a>
