@@ -3,9 +3,11 @@
 	"main": "./jerzy.js",
 	"devDependencies": {
 		"mocha": "*",
-		"chai": "*"
+		"chai": "*",
+		"webmake": "*"
 	},
 	"scripts": {
-		"test": "node_modules/.bin/mocha"
+		"test": "node_modules/.bin/mocha",
+		"build": "node_modules/.bin/webmake jerzy.js browser.js"
 	}
 }

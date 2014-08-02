@@ -108,7 +108,7 @@ console.log(JSON.stringify(t, null, 4));
 
 ```javascript
 var v = new jerzy.Vector([44617, 7066, 17594, 2726, 1178, 18898, 5033, 37151, 4514, 4000]);
-console.log(jerzy.Confidence.confidence(v, 0.95));
+console.log(jerzy.Confidence.normal(v, 0.95));
 ```
 
 ```javascript
