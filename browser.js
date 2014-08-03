@@ -874,6 +874,14 @@
 					return sum;
 				};
 				
+				Vector.prototype.log = function() {
+					var result = new Vector(this.elements.slice(0));
+					for (var i = 0, n = this.elements.length; i < n; ++i) {
+						result.elements[i] = Math.log(result.elements[i]);
+					}
+					return result;
+				};
+				
 				Vector.prototype.add = function(term) {
 					var result = new Vector(this.elements.slice(0));
 					if (term instanceof Vector) {
@@ -922,6 +930,10 @@
 						sum += this.elements[i];
 					}
 					return sum / this.elements.length;
+				};
+				
+				Vector.prototype.geomean = function() {
+					return Math.exp(this.log().sum() / this.elements.length);
 				};
 				
 				Vector.prototype.sortElements = function() {

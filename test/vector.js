@@ -19,4 +19,10 @@ describe('jerzy.Vector', function() {
 			assert.closeTo(v.kurtosis(), 1.8118, 0.0001);
 		});
 	});
+	describe("#geomean()", function() {
+		it("should return the correct geometric mean", function() {
+			var v = new jerzy.Vector([1, 2, 3, 10]);
+			assert.closeTo(v.geomean(),  2.783158, 0.000001);
+		});
+	});
 });
