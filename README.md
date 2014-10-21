@@ -51,6 +51,15 @@ console.log(JSON.stringify(d, null, 4));
 }
 ```
 
+```
+var z = new jerzy.Normal(0, 1).inverse(0.975);
+console.log(z);
+```
+
+```
+1.959963986120195
+```
+
 #### T distribution
 
 ```javascript
