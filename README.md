@@ -24,6 +24,7 @@ console.log(new jerzy.Normal(0, 1).dens(0));
 [Distributions](#distributions)  
 [One- and two-sample tests](#tests)  
 [Confidence intervals](#confidence)  
+[Power and sample size](#power)  
 [Regression](#regression)  
 [ANOVA](#anova)  
 [Correlation](#correlation)  
@@ -122,6 +123,17 @@ console.log(jerzy.Confidence.normal(v, 0.95));
 
 ```javascript
 [ 3299.8678459441107, 25255.53215405589 ]
+```
+
+<a name="power"></a>
+### Power and sample size
+
+```javascript
+console.log(jerzy.Power.sampleSize(0.05, 0.8, 0.72, 0.15));
+```
+
+```javascript
+361.67637834828054
 ```
 
 <a name="regression"></a>
