@@ -10,6 +10,7 @@ var numeric = require('./lib/numeric');
 var anova = require('./lib/anova');
 var normality = require('./lib/normality');
 var confidence = require('./lib/confidence');
+var power = require('./lib/power');
 
 module.exports.Vector = vector.Vector;
 module.exports.Factor = factor.Factor;
@@ -27,3 +28,4 @@ module.exports.Correlation = correlation.Correlation;
 module.exports.Anova = anova.Anova;
 module.exports.Normality = normality.Normality;
 module.exports.Confidence = confidence.Confidence;
+module.exports.Power = power.Power;
