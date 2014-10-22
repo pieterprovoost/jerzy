@@ -91,7 +91,7 @@ case 1:
 	require("'eighteen'");
 	break;
 case 2:
-	require('nineteen');
+	new require('nineteen');
 	break;
 default:
 	require('twenty');

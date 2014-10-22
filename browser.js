@@ -123,6 +123,7 @@
 			var anova = require('./lib/anova');
 			var normality = require('./lib/normality');
 			var confidence = require('./lib/confidence');
+			var power = require('./lib/power');
 			
 			module.exports.Vector = vector.Vector;
 			module.exports.Factor = factor.Factor;
@@ -140,6 +141,7 @@
 			module.exports.Anova = anova.Anova;
 			module.exports.Normality = normality.Normality;
 			module.exports.Confidence = confidence.Confidence;
+			module.exports.Power = power.Power;
 		},
 		"lib": {
 			"anova.js": function (exports, module, require) {
@@ -737,6 +739,18 @@
 				}
 				
 				module.exports.Numeric = Numeric;
+			},
+			"power.js": function (exports, module, require) {
+				var distributions = require('./distributions');
+
+				Power = function() {};
+
+				Power.sampleSize = function(a, power, sd, effect) {
+					var n = new distributions.Normal(0, 1);
+					return (2 * Math.pow(n.inverse(1 - a / 2) + n.inverse(power), 2) * Math.pow(sd, 2)) / Math.pow(effect, 2);
+				};
+
+				module.exports.Power = Power;
 			},
 			"regression.js": function (exports, module, require) {
 				var distributions = require('./distributions');

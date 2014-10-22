@@ -19,7 +19,8 @@ walker = function (ast) {
 	keys(ast).forEach(function (key) {
 		if (key !== 'range') walker.call(this, ast[key]);
 	}, this);
-	if ((ast.type === 'CallExpression') && (ast.callee.type === 'Identifier') &&
+	if (((ast.type === 'CallExpression') || (ast.type === 'NewExpression')) &&
+			(ast.callee.type === 'Identifier') &&
 			(ast.callee.name === 'require') && (this.code[ast.range[0]] !== '(')) {
 		dep = { point: this.code.indexOf('(', ast.range[0]) + 2 };
 		dep.raw = this.code.slice(dep.point - 1, ast.range[1] - 1);

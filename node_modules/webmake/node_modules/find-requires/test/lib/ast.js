@@ -28,6 +28,10 @@ module.exports = function (t, a, d) {
 		}).filter(function (value) {
 			return value != null;
 		}), result, "Result");
+		if (astR.length !== result.length) {
+			d();
+			return;
+		}
 		a(astR[0].point, 9, "Point");
 		a(astR[0].line, 1, "Line");
 		a(astR[0].column, 9, "Column");
