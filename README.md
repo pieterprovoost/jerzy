@@ -125,6 +125,15 @@ console.log(jerzy.Confidence.normal(v, 0.95));
 [ 3299.8678459441107, 25255.53215405589 ]
 ```
 
+```javascript
+var v = new jerzy.Vector([44617, 7066, 17594, 2726, 1178, 18898, 5033, 37151, 4514, 4000]);
+console.log(jerzy.Confidence.normalUpper(v, 0.95));
+```
+
+```javascript
+23173.45950875796
+```
+
 <a name="power"></a>
 ### Power and sample size
 
