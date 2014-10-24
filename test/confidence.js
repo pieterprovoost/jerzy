@@ -6,6 +6,7 @@ describe('jerzy.Confidence', function() {
 			assert.closeTo(jerzy.Confidence.normal(v, 0.95)[0], 3299.868, 0.001);
 			assert.closeTo(jerzy.Confidence.normal(v, 0.95)[1], 25255.532, 0.001);
 			assert.closeTo(jerzy.Confidence.normalLower(v2, 0.95), 17.30, 0.01);
+			assert.closeTo(jerzy.Confidence.normalUpper(v, 0.95), 23173.46, 0.01);
 		});
 	});
 });
