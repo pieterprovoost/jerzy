@@ -93,6 +93,21 @@ console.log(JSON.stringify(jerzy.Normality.shapiroWilk(v), null, 4));
 }
 ```
 
+#### Empirical distribution function
+
+```javascript
+var v = new jerzy.Vector([-15.4, -8.8, 8.2, 3.4, -7.1, 4.5, -12.7, 5.2, -10.6, -11.2]);
+console.log(v.ecdf(-20));
+console.log(v.ecdf(-2));
+console.log(v.ecdf(8.2));
+```
+
+```
+0
+0.6
+1
+```
+
 <a name="tests"></a>
 ### One- and two-sample tests
 #### Two-sample Student's T-test
