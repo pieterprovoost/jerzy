@@ -124,6 +124,7 @@
 			var normality = require('./lib/normality');
 			var confidence = require('./lib/confidence');
 			var power = require('./lib/power');
+			var nonparametric = require('./lib/nonparametric');
 			
 			module.exports.Vector = vector.Vector;
 			module.exports.Factor = factor.Factor;
@@ -136,12 +137,14 @@
 			module.exports.StandardNormal = distributions.StandardNormal;
 			module.exports.T = distributions.T;
 			module.exports.F = distributions.F;
+			module.exports.Kolmogorov = distributions.Kolmogorov;
 			module.exports.Regression = regression.Regression;
 			module.exports.Correlation = correlation.Correlation;
 			module.exports.Anova = anova.Anova;
 			module.exports.Normality = normality.Normality;
 			module.exports.Confidence = confidence.Confidence;
 			module.exports.Power = power.Power;
+			module.exports.Nonparametric = nonparametric.Nonparametric;
 		},
 		"lib": {
 			"anova.js": function (exports, module, require) {
@@ -404,6 +407,45 @@
 				};
 				
 				/*
+				 * Kolmogorov distribution
+				 */
+				
+				Kolmogorov = function() {};
+				
+				Kolmogorov.prototype._di = function(x) {
+					var term;
+					var sum = 0;
+					var k = 1;
+					do {
+						term = Math.exp(-Math.pow(2 * k - 1, 2) * Math.pow(Math.PI, 2) / (8 * Math.pow(x, 2)));
+						sum = sum + term;
+						k++;
+					} while (Math.abs(term) > 0.000000000001);
+					return Math.sqrt(2 * Math.PI) * sum / x;
+				};
+				
+				Kolmogorov.prototype.distr = function(arg) {
+				        if (arg instanceof vector.Vector) {
+				                result = new vector.Vector([]);
+				                for (var i = 0; i < arg.length(); ++i) {
+				                        result.push(this._di(arg.elements[i]));
+				                }
+				                return result;
+				        } else {
+				                return this._di(arg);
+				        }
+				};
+				
+				Kolmogorov.prototype.inverse = function(x) {
+					return (function (o, x) {
+						var t = numeric.Numeric.bisection(function(y) {
+							return o._di(y) - x;
+						}, 0, 1);
+						return t;
+					})(this, x);
+				};
+				
+				/*
 				 * F distribution
 				 */
 				
@@ -432,6 +474,7 @@
 				module.exports.StandardNormal = StandardNormal;
 				module.exports.T = T;
 				module.exports.F = F;
+				module.exports.Kolmogorov = Kolmogorov;
 			},
 			"factor.js": function (exports, module, require) {
 				Factor = function(elements) {
@@ -586,6 +629,30 @@
 				}
 
 				module.exports.Misc = Misc;
+			},
+			"nonparametric.js": function (exports, module, require) {
+				var vector = require('./vector');
+				var distributions = require('./distributions');
+
+				Nonparametric = function() {};
+
+				/*
+				 * Two-sample Kolmogorov-Smirnov test
+				 */
+
+				Nonparametric.kolmogorovSmirnov = function(x, y) {
+					var all = new vector.Vector(x.elements.concat(y.elements)).sort();
+					var ecdfx = x.ecdf(all);
+					var ecdfy = y.ecdf(all);
+					var d = ecdfy.subtract(ecdfx).abs().max();
+
+					var test = d / Math.sqrt((x.length() + y.length()) / (x.length() * y.length()));
+					console.log("p", new distributions.Kolmogorov().distr(test));
+					console.log("d", d);
+					
+				}
+
+				module.exports.Nonparametric = Nonparametric;
 			},
 			"normality.js": function (exports, module, require) {
 				var matrix = require('./matrix');
@@ -872,6 +939,18 @@
 					return this.elements.length;
 				};
 				
+				Vector.prototype.concat = function(x) {
+					return new Vector(this.elements.slice(0).concat(x.elements.slice(0)));
+				};
+				
+				Vector.prototype.abs = function() {
+					var values = [];
+					for (var i = 0; i < this.elements.length; i++) {
+						values.push(Math.abs(this.elements[i]));
+					}
+					return new Vector(values);
+				};
+				
 				Vector.prototype.dot = function(v) {
 					var result = 0;
 					for (var i = 0; i < this.length(); i++) {
@@ -908,6 +987,10 @@
 						}
 					}
 					return result;
+				};
+				
+				Vector.prototype.subtract = function(term) {
+					return this.add(term.multiply(-1));
 				};
 				
 				Vector.prototype.multiply = function(factor) {
@@ -960,6 +1043,27 @@
 						sorted[j + 1] = tmp;
 					}
 					return sorted;
+				};
+				
+				Vector.prototype._ecdf = function(x) {
+					var sorted = this.sortElements();
+					var count = 0;
+					for (var i = 0; i < sorted.length && sorted[i] <= x; i++) {
+						count++;	
+					}
+					return count / sorted.length;
+				};
+				
+				Vector.prototype.ecdf = function(arg) {
+					if (arg instanceof Vector) {
+						var result = new Vector([]);
+						for (var i = 0; i < arg.length(); i++) {
+							result.push(this._ecdf(arg.elements[i]));
+						}
+						return result;
+					} else {
+						return this._ecdf(arg);
+					}
 				};
 				
 				Vector.prototype.sort = function() {
