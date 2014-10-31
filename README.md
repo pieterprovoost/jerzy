@@ -79,6 +79,17 @@ console.log(JSON.stringify(d, null, 4));
 }
 ```
 
+#### Kolmogorov distribution
+
+```javascript
+var k = new jerzy.Kolmogorov();
+console.log(k.distr(1));
+```
+
+```javascript
+0.7300003283226454
+```
+
 #### Shapiro-Wilk test
 
 ```javascript
