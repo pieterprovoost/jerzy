@@ -84,10 +84,12 @@ console.log(JSON.stringify(d, null, 4));
 ```javascript
 var k = new jerzy.Kolmogorov();
 console.log(k.distr(1));
+console.log(k.inverse(0.45586));
 ```
 
 ```javascript
 0.7300003283226454
+0.800001482013613
 ```
 
 #### Shapiro-Wilk test
