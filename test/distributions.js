@@ -62,3 +62,13 @@ describe('jerzy.T', function() {
 		});
 	});
 });
+
+describe('jerzy.Kolmogorov', function() {
+	var k = new jerzy.Kolmogorov();
+	describe("#distr", function() {
+		it("should return the correct value", function() {
+			assert.closeTo(k.distr(1), 0.73, 0.01);
+			assert.closeTo(k.distr(0.8), 0.45586, 0.00001);
+		});
+	});
+});
