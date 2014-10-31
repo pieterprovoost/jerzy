@@ -24,6 +24,7 @@ module.exports.Normal = distributions.Normal;
 module.exports.StandardNormal = distributions.StandardNormal;
 module.exports.T = distributions.T;
 module.exports.F = distributions.F;
+module.exports.Kolmogorov = distributions.Kolmogorov;
 module.exports.Regression = regression.Regression;
 module.exports.Correlation = correlation.Correlation;
 module.exports.Anova = anova.Anova;
