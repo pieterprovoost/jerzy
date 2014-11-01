@@ -141,6 +141,23 @@ console.log(JSON.stringify(t, null, 4));
 }
 ```
 
+#### Two-sample Kolmogorov-Smirnov test
+
+```javascript
+var x = new jerzy.Vector([7.6, 8.4, 8.6, 8.7, 9.3, 9.9, 10.1, 10.6, 11.2]);
+var y = new jerzy.Vector([5.2, 5.7, 5.9, 6.5, 6.8, 8.2, 9.1, 9.8, 10.8, 11.3, 11.5, 12.3, 12.5, 13.4, 14.6]);
+
+console.log(JSON.stringify(new jerzy.Nonparametric.kolmogorovSmirnov(x, y), null, 4));
+```
+
+```javascript
+{
+    "d": 0.4,
+    "ks": 0.9486832980505139,
+    "p": 0.3291047890978148
+}
+```
+
 <a name="confidence"></a>
 ### Confidence intervals
 
