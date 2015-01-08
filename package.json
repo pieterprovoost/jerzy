@@ -1,5 +1,8 @@
 {
 	"name": "jerzy",
+	"version": "0.1.0",
+	"author": "Pieter Provoost <pieterprovoost@gmail.com>",
+	"license": "MIT",
 	"main": "./jerzy.js",
 	"devDependencies": {
 		"mocha": "*",
