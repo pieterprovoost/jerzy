@@ -4,6 +4,10 @@
 	"author": "Pieter Provoost <pieterprovoost@gmail.com>",
 	"license": "MIT",
 	"main": "./jerzy.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pieterprovoost/jerzy"
+	}
 	"devDependencies": {
 		"mocha": "*",
 		"chai": "*",
