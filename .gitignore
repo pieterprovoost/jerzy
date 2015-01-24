@@ -1,5 +1,5 @@
 info
 .dropbox
-**/DS_Store
+**/.DS_Store
 node_modules
 
