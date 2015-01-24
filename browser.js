@@ -645,11 +645,15 @@
 					var ecdfx = x.ecdf(all);
 					var ecdfy = y.ecdf(all);
 					var d = ecdfy.subtract(ecdfx).abs().max();
+					var n = (x.length() * y.length()) / (x.length() + y.length());
+					var ks = Math.sqrt(n) * d;
+					var p = 1 - new distributions.Kolmogorov().distr(ks);
 
-					var test = d / Math.sqrt((x.length() + y.length()) / (x.length() * y.length()));
-					console.log("p", new distributions.Kolmogorov().distr(test));
-					console.log("d", d);
-					
+					return {
+						"d": d,
+						"ks": ks,
+						"p": p
+					};
 				}
 
 				module.exports.Nonparametric = Nonparametric;
@@ -779,9 +783,9 @@
 				 * root finding: bisection
 				 */
 				
-				Numeric.bisection = function(f, a, b) {
-					var tolerance = 0.000000001;
-					while (Math.abs(a - b) > tolerance) {
+				Numeric.bisection = function(f, a, b, eps) {
+					eps = typeof eps !== "undefined" ? eps : 1e-9;
+					while (Math.abs(a - b) > eps) {
 				 		if (f(a) * f((a + b) / 2) < 0) {
 				 			b = (a + b) / 2;
 				 		} else {
@@ -795,10 +799,10 @@
 				 * root finding: secant
 				 */
 				
-				Numeric.secant = function(f, a, b) {
-					var tolerance = 0.000000001;
+				Numeric.secant = function(f, a, b, eps) {
+					eps = typeof eps !== "undefined" ? eps : 1e-9;
 					var q = [a, b];
-					while (Math.abs(q[0] - q[1]) > tolerance) {
+					while (Math.abs(q[0] - q[1]) > eps) {
 						q.push((q[0] * f(q[1]) - q[1] * f(q[0])) / (f(q[1]) - f(q[0])));
 						q.shift();
 					}
@@ -811,6 +815,10 @@
 				var distributions = require('./distributions');
 
 				Power = function() {};
+
+				/*
+				 * Sample size calculation
+				 */
 
 				Power.sampleSize = function(a, power, sd, effect) {
 					var n = new distributions.Normal(0, 1);
@@ -933,6 +941,10 @@
 				
 				Vector.prototype.push = function(value) {
 					this.elements.push(value);
+				};
+				
+				Vector.prototype.map = function(fun) {
+					return new Vector(this.elements.map(fun));
 				};
 				
 				Vector.prototype.length = function() {
