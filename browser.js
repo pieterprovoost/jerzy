@@ -6,7 +6,7 @@
 
 	var resolve, getRequire, wmRequire, notFoundError, findFile
 	  , extensions = {".js":[],".json":[],".css":[],".html":[]}
-	  , envRequire = typeof require === 'undefined' ? null : require;
+	  , envRequire = typeof require === 'function' ? require : null;
 
 	notFoundError = function (path) {
 		var error = new Error("Could not find module '" + path + "'");
@@ -1039,6 +1039,16 @@
 						sum += this.elements[i];
 					}
 					return sum / this.elements.length;
+				};
+				
+				Vector.prototype.median = function() {
+					var sorted = this.sort();
+					var middle = Math.floor(sorted.length() / 2);
+					if (sorted.length() % 2) {
+						return sorted.elements[middle];
+					} else {
+						return (sorted.elements[middle - 1] + sorted.elements[middle]) / 2;
+					}
 				};
 				
 				Vector.prototype.geomean = function() {

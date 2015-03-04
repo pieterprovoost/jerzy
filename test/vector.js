@@ -25,4 +25,12 @@ describe('jerzy.Vector', function() {
 			assert.closeTo(v.geomean(),  2.783158, 0.000001);
 		});
 	});
+	describe("#median()", function() {
+		it("should return the correct median", function() {
+			var v = new jerzy.Vector([1, 5, 3, 2]);
+			assert.equal(v.median(),  2.5);
+			v = new jerzy.Vector([1, 5, 3, 2, 4]);
+			assert.equal(v.median(),  3);
+		});
+	});
 });
