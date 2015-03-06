@@ -22,15 +22,33 @@ describe('jerzy.Vector', function() {
 	describe("#geomean()", function() {
 		it("should return the correct geometric mean", function() {
 			var v = new jerzy.Vector([1, 2, 3, 10]);
-			assert.closeTo(v.geomean(),  2.783158, 0.000001);
+			assert.closeTo(v.geomean(), 2.783158, 0.000001);
 		});
 	});
 	describe("#median()", function() {
 		it("should return the correct median", function() {
 			var v = new jerzy.Vector([1, 5, 3, 2]);
-			assert.equal(v.median(),  2.5);
+			assert.equal(v.median(), 2.5);
 			v = new jerzy.Vector([1, 5, 3, 2, 4]);
-			assert.equal(v.median(),  3);
+			assert.equal(v.median(), 3);
+			v = new jerzy.Vector([1, 2]);
+			assert.equal(v.median(), 1.5);
+		});
+	});
+	describe("#q1()", function() {
+		it("should return the correct q1", function() {
+			var v = new jerzy.Vector([1, 5, 3, 2]);
+			assert.equal(v.q1(), 1.5);
+			v = new jerzy.Vector([1, 5, 3, 2, 4]);
+			assert.equal(v.q1(), 1.5);
+		});
+	});
+	describe("#q3()", function() {
+		it("should return the correct q2", function() {
+			var v = new jerzy.Vector([1, 5, 3, 2]);
+			assert.equal(v.q3(), 4);
+			v = new jerzy.Vector([1, 5, 3, 2, 4]);
+			assert.equal(v.q3(), 4.5);
 		});
 	});
 });
