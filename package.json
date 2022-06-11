@@ -9,12 +9,18 @@
 		"url": "https://github.com/pieterprovoost/jerzy"
 	},
 	"devDependencies": {
-		"mocha": "*",
 		"chai": "*",
+		"mocha": "*",
 		"webmake": "*"
 	},
 	"scripts": {
 		"test": "./node_modules/.bin/mocha",
 		"webmake": "./node_modules/.bin/webmake jerzy.js browser.js"
+	},
+	"dependencies": {
+		"@stdlib/math-base-special-beta": "^0.0.6",
+		"@stdlib/math-base-special-betainc": "^0.0.6",
+		"install": "^0.13.0",
+		"npm": "^8.12.1"
 	}
 }

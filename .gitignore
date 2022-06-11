@@ -3,3 +3,7 @@ info
 **/.DS_Store
 node_modules
 **/.Rhistory
+.idea
+.vscode
+package-lock.json
+
