@@ -11,7 +11,7 @@
 	"devDependencies": {
 		"chai": "*",
 		"mocha": "*",
-		"webmake": "*"
+		"webmake": "^1.1.2"
 	},
 	"scripts": {
 		"test": "./node_modules/.bin/mocha",
